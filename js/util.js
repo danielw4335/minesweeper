@@ -22,3 +22,17 @@ function getRandomColor() {
   return color
 }
 
+function getRandomInt(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); 
+}
+
+
+function getCellCoord(strCellId) {
+  const coord = {}
+  const parts = strCellId.split('-') // ['cell','2','7']
+  coord.i = +parts[1]
+  coord.j = +parts[2]
+  return coord
+}

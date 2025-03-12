@@ -1,16 +1,21 @@
-/* @font-face {
-    font-family: 'font name';
-    src: url('../') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-} */
-
 body {
-    min-height: 100vh;
-    /* background-image: url('../'); */
-    /* background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center; */
-    margin: 0;
-    padding: 0;
+    text-align: center;
+}
+
+.table {
+    margin: 0 auto;
+   
+}
+
+.cell {
+    width: 3.8em;
+    height: 3.8em; 
+    outline: 1px solid black;
+    
+}
+
+.Covered {
+background-color: gray;
+color: gray;
+cursor: pointer;
 }
