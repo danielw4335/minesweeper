@@ -29,10 +29,21 @@ function getRandomInt(min, max) {
 }
 
 
-function getCellCoord(strCellId) {
+function getCellId(strCellId) {
   const coord = {}
   const parts = strCellId.split('-') // ['cell','2','7']
   coord.i = +parts[1]
   coord.j = +parts[2]
   return coord
+}
+
+function renderCell(location, value) {
+	const cellSelector = `.${getClassName(location)}` //.cell-0-0
+	const elCell = document.querySelector(cellSelector)
+	elCell.innerHTML = value
+}
+
+function getClassName(location) {
+	const cellClass = `cell-${location.i}-${location.j}` //מקבל אובייקט עם I וJ ומוציא אותו לHTML
+	return cellClass
 }

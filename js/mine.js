@@ -5,7 +5,9 @@ function setMinesNegsCount(board) {
     for (var i = 0; i < board.length; i++) {
         for (var j = 0; j < board[i].length; j++) {
             if (!board[i][j].isMine) {
-                board[i][j].minesAroundCount = countMinesAround(board, i, j)
+               const count = countMinesAround(board, i, j)
+                board[i][j].minesAroundCount = count
+                renderCell({ i: i, j: j }, count)
             }
         }
     }
@@ -28,35 +30,40 @@ function countMinesAround(mat, cellI, cellJ) {
     return count
 }
 
-function addMinesToBoard(board) {
-    const randNum = getRandomInt(0, board.length * 2)
-    // console.log('randNum:', randNum)
+function addMinesToBoard(board, firsCell) {
+    const randNum = getRandomInt(0, board.length * 3)
+    console.log('randNum:', randNum)
     for (var i = 0; i < randNum; i++) {
         const i = getRandomInt(0, board.length)
         const j = getRandomInt(0, board.length)
+        const curCell = board[i][j]
         // console.log('i, j:', i, j)
-        if (!board[i][j].isMine) {
-            board[i][j].isMine = true
+        if (!curCell.isMine && firsCell !== curCell) {
+            curCell.isMine = true
             gLevel.MINES++
+            // var minePos = getClassName({ i: i, j: j }) // cell-0-0
+            renderCell({ i: i, j: j }, MINES_IMG)
         }
     }
 }
 
-function onCellMarked(elCell){
-   const cell = getCellCoord(elCell.id)
-   const curCell = gBoard[cell.i][cell.j]
-   console.log('curCell:', curCell)
+function onCellMarked(elCell) {
+    const pos = getCellId(elCell.id)
+    const curCell = gBoard[pos.i][pos.j]
+    console.log('curCell:', curCell)
 
-   if(!curCell.isMarked) {
-    curCell.isMarked = true
-if(curCell.isMine)gLevel.MARKMINES++
-}
-   else {
-    curCell.isMarked = false
-    if(curCell.isMine)gLevel.MARKMINES--   
-}
-   console.log('curCell:', curCell)
-   
-checkGameOver(elCell)
+    if (!curCell.isMarked) {
+        curCell.isMarked = true
+        if (curCell.isMine) gLevel.MARKMINES++
+    }
+    else {
+        curCell.isMarked = false
+        if (curCell.isMine) gLevel.MARKMINES--
+    }
+    console.log('curCell:', curCell)
+
+    renderCell({ i: pos.i, j: pos.j }, FLAG_IMG)
+
+    checkGameOver(elCell)
 }
 
