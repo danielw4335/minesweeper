@@ -24,7 +24,7 @@ function countMinesAround(mat, cellI, cellJ) {
             if (i === cellI && j === cellJ) continue
             if (j < 0 || j >= mat[i].length) continue
             if (mat[i][j].isMine) count++
-            // console.log('mat[i][j], minesNegs:', mat[i][j], count)
+            console.log('mat[i][j], minesNegs:', mat[i][j], count)
         }
     }
     return count
@@ -37,13 +37,14 @@ function addMinesToBoard(board, firsCell) {
         const i = getRandomInt(0, board.length)
         const j = getRandomInt(0, board.length)
         const curCell = board[i][j]
-        // console.log('i, j:', i, j)
+        console.log('i, j:', i, j)
         if (!curCell.isMine && firsCell !== curCell) {
             curCell.isMine = true
             gLevel.MINES++
-            console.log('gLevel.MINES++:add', gLevel.MINES)
             // var minePos = getClassName({ i: i, j: j }) // cell-0-0
             renderCell({ i: i, j: j }, MINES_IMG )
+            console.log('gLevel.MINES:', gLevel.MINES)
+            
         }
     }
 }

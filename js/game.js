@@ -4,23 +4,24 @@ const MINES_IMG = `<img src="img/MINE.png" class="mine-img">`
 // const MINES_IMG = `💣`
 const FLAG_IMG = `🚩`
 
-var gLevel = {
-    SIZE: 8,
-    MINES: 0,
-    MARKMINES: 0,
-    COVEREDCELLS: 0,
-    FIRSTCLICK: false,
-    LOSS: false,
-    WIN: false
-}
+
 var gBoard
 
+var gLevel
 
 
 
 function oninit() {
-    gLevel.FIRSTCLICK = false
-    gLevel.LOSS = false
+    gLevel = {
+        SIZE: 8,
+        MINES: 0,
+        MARKMINES: 0,
+        COVEREDCELLS: 0,
+        FIRSTCLICK: false,
+        LOSS: false,
+        WIN: false
+    }
+   
     gBoard = buildBoard(gLevel)
     renderBoard(gBoard)
     console.table(gBoard)
@@ -36,11 +37,25 @@ function firstClicked(currCell) {
 }
 
 function checkGameOver() {
-    smileyButtonStatus()
-    if (gLevel.MARKMINES === gLevel.COVEREDCELLS)gLevel.WIN = true
-    // if (gLevel.LOSS) {alert('you loss!')}
+    
+    const totalCells = gLevel.SIZE * gLevel.SIZE
+    const nonMineCells = totalCells - gLevel.MINES
 
+    console.log(gLevel.COVEREDCELLS)
+    console.log(nonMineCells)
+
+    if (gLevel.COVEREDCELLS === gLevel.MINES && !gLevel.LOSS) {
+        gLevel.WIN = true;
+        console.log('winn')
+    }
+
+    smileyButtonStatus()
 }
+
+
+
+
+
 
 function buildBoard(gLevel) {
     const size = gLevel.SIZE
@@ -91,7 +106,6 @@ function onCellClicked(elCell) {
     uncoverdsHint(elCell)
  return
 }
-console.log('chek return')
     const pos = getCellId(elCell.id)
     const currCell = gBoard[pos.i][pos.j]
     console.log(pos)
@@ -110,7 +124,9 @@ console.log('chek return')
             countLives(elCell, currCell)
         }
     }
+ 
     checkGameOver(elCell)
+    
 }
 
 

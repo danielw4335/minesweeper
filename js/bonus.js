@@ -10,11 +10,18 @@ var lantern = "🔦"
 
 function countLives(elCell, posCell) {
     if (HINTS) return
+
+    const elImg = elCell.querySelector("img")
+
     if (currCell.includes(elCell)) {
         elCell.classList.remove('Covered')
-        const elImg = elCell.querySelector("img")
-        elImg.classList.remove("mine-img")
-    } else if (!currCell.includes(elCell)) {
+        if (elImg) {
+            elImg.classList.remove("mine-img")
+            elImg.style.opacity = "1"
+        } else {
+            console.log('nun img', elCell)
+        }
+    } else {
         LIVES--
         const rename = document.getElementById("lives")
         if (LIVES === 2) rename.innerText = heart + heart
@@ -23,9 +30,10 @@ function countLives(elCell, posCell) {
 
         currCell.push(elCell)
     }
+
     if (!LIVES) gLevel.LOSS = true
-    console.log('LIVES:', LIVES)
-    console.log('gLevel.loss:', gLevel.LOSS)
+    console.log("LIVES:", LIVES)
+    console.log("gLevel.loss:", gLevel.LOSS)
     checkGameOver(elCell)
 }
 
@@ -36,14 +44,14 @@ function smileyButton(elSmiley) {
     document.getElementById("HINTS").innerText = lantern + lantern + lantern
     LIVES = 3
     SUMHINTS = 3
-    gLevel.SIZE = 8
     oninit()
 }
 
 function smileyButtonStatus() {
+    const smileyChange = document.getElementById("smiley")
+    
     if (gLevel.LOSS) {
         console.log('loss')
-        const smileyChange = document.getElementById("smiley")
         smileyChange.innerText = "🤯"
     }
     if (gLevel.WIN) {
