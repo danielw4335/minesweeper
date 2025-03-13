@@ -31,8 +31,8 @@ function countMinesAround(mat, cellI, cellJ) {
 }
 
 function addMinesToBoard(board, firsCell) {
-    const randNum = getRandomInt(0, board.length * 3)
-    console.log('randNum:', randNum)
+    const randNum = getRandomInt(board.length * 2 , board.length * 4)
+    // console.log('randNum:', randNum)
     for (var i = 0; i < randNum; i++) {
         const i = getRandomInt(0, board.length)
         const j = getRandomInt(0, board.length)
@@ -41,8 +41,9 @@ function addMinesToBoard(board, firsCell) {
         if (!curCell.isMine && firsCell !== curCell) {
             curCell.isMine = true
             gLevel.MINES++
+            console.log('gLevel.MINES++:add', gLevel.MINES)
             // var minePos = getClassName({ i: i, j: j }) // cell-0-0
-            renderCell({ i: i, j: j }, MINES_IMG)
+            renderCell({ i: i, j: j }, MINES_IMG )
         }
     }
 }
@@ -50,19 +51,27 @@ function addMinesToBoard(board, firsCell) {
 function onCellMarked(elCell) {
     const pos = getCellId(elCell.id)
     const curCell = gBoard[pos.i][pos.j]
-    console.log('curCell:', curCell)
+    // console.log('curCell:', curCell)
+    if(!curCell.isCovered)return
 
     if (!curCell.isMarked) {
         curCell.isMarked = true
         if (curCell.isMine) gLevel.MARKMINES++
+        // console.log('gLevel.MARKMINES--: marked', gLevel.MARKMINES)
+        renderCell({ i: pos.i, j: pos.j }, FLAG_IMG)
     }
-    else {
+    else{
         curCell.isMarked = false
-        if (curCell.isMine) gLevel.MARKMINES--
-    }
-    console.log('curCell:', curCell)
+        if (curCell.isMine){
+            gLevel.MARKMINES--
+            // console.log('gLevel.MARKMINES--: marked1', gLevel.MARKMINES)
+            renderCell({ i: pos.i, j: pos.j }, MINES_IMG)
+        }else if(!curCell.isMine){
+            renderCell({ i: pos.i, j: pos.j }, curCell.minesAroundCount)
+        }
 
-    renderCell({ i: pos.i, j: pos.j }, FLAG_IMG)
+    }
+    // console.log('curCell:', curCell)
 
     checkGameOver(elCell)
 }

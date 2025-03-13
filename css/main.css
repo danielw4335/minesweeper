@@ -1,26 +1,106 @@
 body {
     text-align: center;
+    background-image: url('back.png');
+    background-position: center;
 }
 
-.table {
+body img{
+    opacity: 0;
+
+}
+
+
+.table, th, td {
     margin: 0 auto;
+    outline: 1px solid black;
+    
+    
    
 }
 
+td{
+    background-color: rgb(188, 244, 244);
+    
+    
+    
+}
+
+
 .cell {
-    width: 3.8em;
-    height: 3.8em; 
-    outline: 1px solid black;
+    width: 20px;
+    height: 20px;
+    
+   
     
 }
 
 .cell img {
-    width: 2.2em;
+    width: 20px;
     height: auto;
-}
+      /* hidden; */
+      /* display: none; */
+      /* opacity: 0; */
+      
+    }
 
-.Covered {
+    .mine-img {
+        opacity: 0; 
+    }  
+    
+    .Covered {
 background-color: gray;
 color: gray;
 cursor: pointer;
+
+}
+
+#smiley{
+    display: block;
+    margin: 0 auto;
+    height: 60px;
+    width: 100px;
+    border-radius:8px;
+    background-color: aquamarine;
+    margin-bottom: 7px;
+    font-size: 45px;
+    text-align: top;
+    cursor: pointer;
+}
+
+#size{
+    /* display: block; */
+    margin: 0 auto;
+    height: 30px;
+    width: 100px;
+    border-radius:8px;
+    background-color: rgba(210, 128, 45, 0.618);
+    margin-bottom: 7px;
+    cursor: pointer;
+}
+
+#hinet{
+    position: absolute;
+    display: block;
+    margin: 0 15%;
+    height: 65px;
+    width: 65px;
+    border-radius:50px;
+    background-color: rgb(207, 241, 69);
+    margin-bottom: 7px;
+    cursor: pointer;
+}
+
+#text{
+  background-color: burlywood;
+}
+
+#text p{
+ background-color: rgb(191, 246, 143);
+  outline: 3px solid rgb(40, 94, 155);
+  width: 110px;
+  margin: 15px auto;
+  padding: 6px;
+  border-radius: 5px;
+  /* display: block; */
+   /* position: absolute; */
 }

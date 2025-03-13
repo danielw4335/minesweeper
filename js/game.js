@@ -1,14 +1,17 @@
 'use strict'
 
-const MINES_IMG = `<img src="img/MINE.png">`
+const MINES_IMG = `<img src="img/MINE.png" class="mine-img">`
+// const MINES_IMG = `💣`
 const FLAG_IMG = `🚩`
 
 var gLevel = {
-    SIZE: 7,
+    SIZE: 8,
     MINES: 0,
     MARKMINES: 0,
     COVEREDCELLS: 0,
-    FIRSTCLICK: false
+    FIRSTCLICK: false,
+    LOSS: false,
+    WIN: false
 }
 var gBoard
 
@@ -16,27 +19,27 @@ var gBoard
 
 
 function oninit() {
+    gLevel.FIRSTCLICK = false
+    gLevel.LOSS = false
     gBoard = buildBoard(gLevel)
     renderBoard(gBoard)
     console.table(gBoard)
 }
 
-function firstClicked(currCell){
-    
+function firstClicked(currCell) {
+    console.log('chek184')
     gLevel.FIRSTCLICK = true
- addMinesToBoard(gBoard, currCell)
+    addMinesToBoard(gBoard, currCell)
     setMinesNegsCount(gBoard)
-    // renderBoard(gBoard)
     console.table(gBoard)
-    
+
 }
 
-function checkGameOver(elCell){
-    // console.log('gLevel.MINES:', gLevel.MINES)
-    // console.log('gLevel.MARKCELLS:', gLevel.COVEREDCELLS)
-    // console.log('gLevel.MARKMINES:', gLevel.MARKMINES)
- if(gLevel.MARKMINES === gLevel.COVEREDCELLS) alert('victory')
-    
+function checkGameOver() {
+    smileyButtonStatus()
+    if (gLevel.MARKMINES === gLevel.COVEREDCELLS)gLevel.WIN = true
+    // if (gLevel.LOSS) {alert('you loss!')}
+
 }
 
 function buildBoard(gLevel) {
@@ -54,11 +57,9 @@ function buildBoard(gLevel) {
             }
             board[i][j] = cell
             gLevel.COVEREDCELLS++
+            // console.log('gLevel.COVEREDCELLS++:buildboard', gLevel.COVEREDCELLS)
         }
     }
-    // board[2][3].isMine = true
-    // board[1][2].isMine = true
-    // console.table(board)
     return board
 }
 
@@ -70,74 +71,89 @@ function renderBoard(board) {
             const cell = board[i][j]
 
             var cellClass = getClassName({ i: i, j: j }) // cell-0-0
-        //    console.log('celClass:', celClass)
-            
+            //    console.log('celClass:', celClass)
+
 
             strHTML += `<td id="cell-${i}-${j}" class="cell ${cellClass} Covered" 
                             onclick="onCellClicked(this, ${i}, ${j})" oncontextmenu="onCellMarked(this, ${i}, ${j})">
-                            ${cell.minesAroundCount}${cell.isMine}
                         </td>`
         }
         strHTML += '</tr>'
     }
     const elMat = document.querySelector('.game-board')
     elMat.innerHTML = strHTML
-    elMat.addEventListener("contextmenu", (e) => {e.preventDefault()})
+    elMat.addEventListener("contextmenu", (e) => { e.preventDefault() })
 }
 
 
 function onCellClicked(elCell) {
+   if(HINTS){
+    uncoverdsHint(elCell)
+ return
+}
+console.log('chek return')
     const pos = getCellId(elCell.id)
     const currCell = gBoard[pos.i][pos.j]
-    // console.log(pos)
-    if(!gLevel.FIRSTCLICK){
+    console.log(pos)
+    if (!gLevel.FIRSTCLICK) {
         firstClicked(currCell)
-        gLevel.COVEREDCELLS--
     }
-    if(currCell.isCovered){
-        if(!currCell.isMine){
+    if (currCell.isCovered) {
+        if (!currCell.isMine) {
             gLevel.COVEREDCELLS--
+            // console.log('gLevel.COVEREDCELLS--:oncelclick', gLevel.COVEREDCELLS)
             expandReveal(gBoard, elCell)
             elCell.classList.remove('Covered')
             currCell.isCovered = false
         }
+        if (currCell.isMine) {
+            countLives(elCell, currCell)
         }
-
-    // console.log('currcell:', currCell)
-
-    
+    }
     checkGameOver(elCell)
 }
 
 
-function expandReveal(board, elCell){
+function expandReveal(board, elCell) {
     const pos = getCellId(elCell.id)
-    
-        for (var i = pos.i - 1; i <= pos.i + 1; i++) {
-            if (i < 0 || i >= board.length) continue
-            for (var j = pos.j - 1; j <= pos.j + 1; j++) {
-                if (i === pos.i && j === pos.j) continue
-                if (j < 0 || j >= board[0].length) continue
-                var currCell = board[i][j]
-                if (!currCell.isMine) {
-                    console.log('currCell:', currCell)
-                    console.log('gLevel.COVEREDCELLS:', gLevel.COVEREDCELLS)
-                    gLevel.COVEREDCELLS--
-                    currCell.isCovered = false
-                   const cellSelector = `.${getClassName({i: i , j: j})}`
-                   console.log('cellSelector:', cellSelector)
-                   console.log('elCell:', elCell)
-                   const elCurrCell = document.querySelector(cellSelector)
-                   elCurrCell.classList.remove('Covered')
 
-                    
-	
+    for (var i = pos.i - 1; i <= pos.i + 1; i++) {
+        if (i < 0 || i >= board.length) continue
+        for (var j = pos.j - 1; j <= pos.j + 1; j++) {
+            if (i === pos.i && j === pos.j) continue
+            if (j < 0 || j >= board[0].length) continue
+            var currCell = board[i][j]
+            if (currCell.isCovered) {
+
+                if (!currCell.isMine) {
                     // console.log('currCell:', currCell)
+                    gLevel.COVEREDCELLS--
+                    // console.log('gLevel.COVEREDCELLS--:eapand1', gLevel.COVEREDCELLS)
+                    currCell.isCovered = false
+                    if (currCell.isMarked) {
+                        currCell.isMarked = false
+                        renderCell({ i: i, j: j }, currCell.minesAroundCount)
+                    }
+                    const cellSelector = `.${getClassName({ i: i, j: j })}`
+                    //    console.log('cellSelector:', cellSelector)
+                    //    console.log('elCell:', elCell)
+                    const elCurrCell = document.querySelector(cellSelector)
+                    elCurrCell.classList.remove('Covered')
+                    // console.log('currCell:', currCell)
+                    checkGameOver()
                 }
             }
         }
-
     }
 
+}
 
+
+
+function changeBoardSize(size) {
+    gLevel.SIZE = size
+    oninit()
+    console.table(gBoard)
+    // console.log('gLevel.SIZE:', gLevel.SIZE)
+}
 
