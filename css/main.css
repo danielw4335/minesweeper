@@ -104,3 +104,8 @@ cursor: pointer;
   /* display: block; */
    /* position: absolute; */
 }
+
+
+.safe-highlight {
+    background-color: yellow 
+}

@@ -1,6 +1,5 @@
 'use strict'
 
-// get Random integer variations
 
 function getRndIntExcMax(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -9,8 +8,6 @@ function getRndIntExcMax(min, max) {
 function getRndIntIncMax(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
-//colors
 
 function getRandomColor() {
   const letters = '0123456789ABCDEF'
@@ -27,7 +24,6 @@ function getRandomInt(min, max) {
   const maxFloored = Math.floor(max);
   return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); 
 }
-
 
 function getCellId(strCellId) {
   const coord = {}

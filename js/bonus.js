@@ -37,6 +37,15 @@ function countLives(elCell, posCell) {
     checkGameOver(elCell)
 }
 
+gLevel = {
+    SIZE: gLevel.SIZE, 
+    MINES: 0,
+    MARKMINES: 0,
+    COVEREDCELLS: 0,
+    FIRSTCLICK: false,
+    LOSS: false,
+    WIN: false
+}
 
 function smileyButton(elSmiley) {
     document.getElementById("smiley").innerText = "😁"
@@ -44,12 +53,13 @@ function smileyButton(elSmiley) {
     document.getElementById("HINTS").innerText = lantern + lantern + lantern
     LIVES = 3
     SUMHINTS = 3
+    gLevel.FIRSTCLICK=false
     oninit()
 }
 
 function smileyButtonStatus() {
     const smileyChange = document.getElementById("smiley")
-    
+
     if (gLevel.LOSS) {
         console.log('loss')
         smileyChange.innerText = "🤯"
@@ -60,21 +70,20 @@ function smileyButtonStatus() {
     }
 }
 
-
-
 function whenHintClicked() {
     const changHints = document.getElementById("HINTS")
-    if(!SUMHINTS)return
-    HINTS = true 
+    if (SUMHINTS <= 0) return
+
     SUMHINTS--
-     if (SUMHINTS === 3) changHints.innerText = lantern + lantern + lantern
-     if (SUMHINTS === 2) changHints.innerText = lantern + lantern 
-        if (SUMHINTS === 1) changHints.innerText = lantern 
-        if (SUMHINTS === 0){changHints.innerText = "Actions Exhausted"}
+    HINTS = true
+
+    if (SUMHINTS === 3) changHints.innerText = lantern + lantern + lantern
+    if (SUMHINTS === 2) changHints.innerText = lantern + lantern
+    if (SUMHINTS === 1) changHints.innerText = lantern
+    if (SUMHINTS === 0) { changHints.innerText = "Actions Exhausted" }
 }
 
 function uncoverdsHint(elCell) {
-
     const board = gBoard
     const pos = getCellId(elCell.id)
 
@@ -84,39 +93,71 @@ function uncoverdsHint(elCell) {
             if (j < 0 || j >= board[0].length) continue
             var currCell = board[i][j]
             if (!currCell.isCovered) continue
+
             console.log('currCell:', currCell)
 
             const cellSelector = `.${getClassName({ i: i, j: j })}`
             var elCurrCell = document.querySelector(cellSelector)
             elCurrCell.classList.remove('Covered')
 
+            currCell.wasHinted = true
             if (currCell.isMine && !currCell.isMarked) {
-                console.log('currCell:mines', currCell)
                 var elImg = elCurrCell.querySelector("img")
-                elImg.classList.remove("mine-img")
+                if (elImg) {
+                    elImg.classList.remove("mine-img")
+                    elImg.style.opacity = "1"
+                } else {
+                    console.log('null img', elCurrCell)
+                }
             }
 
-            setTimeout((elCurrCell, currCell, elImg) => {
-                elCurrCell.classList.add("Covered")
-                if (currCell.isMine && elImg) {
-                    elImg.classList.add("mine-img")
+            setTimeout(() => {
+                for (var i = pos.i - 1; i <= pos.i + 1; i++) {
+                    if (i < 0 || i >= board.length) continue
+                    for (var j = pos.j - 1; j <= pos.j + 1; j++) {
+                        if (j < 0 || j >= board[0].length) continue
+
+                        var currCell = board[i][j]
+                        if (!currCell.wasHinted) continue
+
+                        const cellSelector = `.${getClassName({ i: i, j: j })}`
+                        var elCurrCell = document.querySelector(cellSelector)
+                        elCurrCell.classList.add("Covered")
+
+                        if (currCell.isMine) {
+                            var elImg = elCurrCell.querySelector("img")
+                            if (elImg) {
+                                elImg.classList.add("mine-img")
+                                elImg.style.opacity = "0"
+                            }
+                        }
+                        currCell.wasHinted = false
                     }
-            }, 2500, elCurrCell, currCell, elImg);
-              
+                }
+            }, 1500)
         }
     }
     HINTS = false
 }
 
-
-function safeCell(){
-
-    // while (gBoard.length ** 2){
-    //     const i = getRandomInt(0, gBoard.length)
-    //     const j = getRandomInt(0, gBoard.length)
-    //     const curCell = gBoard[i][j]
-    //     console.log(curCell)
-    // }
-
-
+function safeCell() {
+var safeCells = []
+    for (var i = 0; i < gBoard.length; i++) {
+        for (var j = 0; j < gBoard[i].length; j++) {
+            const currCell = gBoard[i][j]
+            if (currCell.isCovered && !currCell.isMine){
+                safeCells.push({ cell: currCell, i: i, j: j })
+            }
+        }
+    }
+  const randNum = getRndIntExcMax(0, safeCells.length)
+    const safeCell = safeCells[randNum]
+        renderCell(safeCell, "✅")
+        
+        setTimeout(() => {
+          
+            renderCell(safeCell, "")
+        }, 1500)
 }
+
+

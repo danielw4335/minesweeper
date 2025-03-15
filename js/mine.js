@@ -14,7 +14,6 @@ function setMinesNegsCount(board) {
     // console.table(board)
 }
 
-
 function countMinesAround(mat, cellI, cellJ) {
     var count = 0
 

@@ -4,24 +4,28 @@ const MINES_IMG = `<img src="img/MINE.png" class="mine-img">`
 // const MINES_IMG = `💣`
 const FLAG_IMG = `🚩`
 
-
 var gBoard
 
-var gLevel
+var gLevel = {
+    SIZE: 8,
+    MINES: 0,
+    MARKMINES: 0,
+    COVEREDCELLS: 0,
+    FIRSTCLICK: false,
+    LOSS: false,
+    WIN: false
+}
 
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// הערות בשבילי
+// להוסיף לsafecell ספירה 
+// לבדוק את השינוי גודל של הטבלאות
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 function oninit() {
-    gLevel = {
-        SIZE: 8,
-        MINES: 0,
-        MARKMINES: 0,
-        COVEREDCELLS: 0,
-        FIRSTCLICK: false,
-        LOSS: false,
-        WIN: false
-    }
-   
+
     gBoard = buildBoard(gLevel)
     renderBoard(gBoard)
     console.table(gBoard)
@@ -51,11 +55,6 @@ function checkGameOver() {
 
     smileyButtonStatus()
 }
-
-
-
-
-
 
 function buildBoard(gLevel) {
     const size = gLevel.SIZE
@@ -100,7 +99,6 @@ function renderBoard(board) {
     elMat.addEventListener("contextmenu", (e) => { e.preventDefault() })
 }
 
-
 function onCellClicked(elCell) {
    if(HINTS){
     uncoverdsHint(elCell)
@@ -128,7 +126,6 @@ function onCellClicked(elCell) {
     checkGameOver(elCell)
     
 }
-
 
 function expandReveal(board, elCell) {
     const pos = getCellId(elCell.id)
@@ -164,12 +161,23 @@ function expandReveal(board, elCell) {
 
 }
 
-
-
 function changeBoardSize(size) {
-    gLevel.SIZE = size
+    gLevel = {
+        SIZE: size,
+        MINES: 0,
+        MARKMINES: 0,
+        COVEREDCELLS: 0,
+        FIRSTCLICK: false,
+        LOSS: false,
+        WIN: false
+    }
+    
+    
+    
     oninit()
     console.table(gBoard)
-    // console.log('gLevel.SIZE:', gLevel.SIZE)
+    console.log('gLevel.SIZE:', gLevel.SIZE)
+
 }
+
 
